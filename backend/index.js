@@ -25,10 +25,11 @@ mongoose.connect('mongodb://127.0.0.1:27017/employee', {
 app.get("/", (req, res) => {
     res.json("hello");
 });
+
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Directory to store uploaded files
+        cb(null, 'uploads/'); // Directory to store images
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname); // Unique filename
