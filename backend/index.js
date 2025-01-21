@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cors(
     {
-       origin:[""],
+       origin:["https//react-login-signup-form-api.vercel.app"],
        methods:["POST", "GET"],
        credentials: true
    }
@@ -22,6 +22,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/employee', {
 }).then(() => console.log("Connected to MongoDB"))
   .catch(err => console.error("MongoDB connection error:", err));
 
+app.get("/", (req, res) => {
+    res.json("hello");
+});
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
