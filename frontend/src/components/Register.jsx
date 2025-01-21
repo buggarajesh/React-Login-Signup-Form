@@ -10,6 +10,7 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [image, setImage] = useState(null); // State to store the uploaded image
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
@@ -42,6 +43,11 @@ const Register = () => {
             newErrors.confirmPassword = "Passwords do not match";
         }
 
+        // Image validation
+        if (!image) {
+            newErrors.image = "Profile image is required";
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -50,7 +56,17 @@ const Register = () => {
         event.preventDefault();
 
         if (validateForm()) {
-            axios.post('http://localhost:3001/register', { name, email, password })
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('image', image);
+
+            axios.post('http://localhost:3001/register', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
                 .then(result => {
                     console.log(result);
                     if (result.data === "Already registered") {
@@ -63,6 +79,10 @@ const Register = () => {
                 })
                 .catch(err => console.log(err));
         }
+    };
+
+    const handleFileChange = (event) => {
+        setImage(event.target.files[0]);
     };
 
     return (
@@ -131,6 +151,19 @@ const Register = () => {
                                 required
                             />
                             {errors.confirmPassword && <div className="invalid-feedback">{errors.confirmPassword}</div>}
+                        </div>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="exampleInputImage" className="form-label">
+                                <strong>Profile Image</strong>
+                            </label>
+                            <input
+                                type="file"
+                                className={`form-control ${errors.image ? 'is-invalid' : ''}`}
+                                id="exampleInputImage"
+                                onChange={handleFileChange}
+                                required
+                            />
+                            {errors.image && <div className="invalid-feedback">{errors.image}</div>}
                         </div>
                         <button type="submit" className="btn btn-primary">Register</button>
                     </form>
