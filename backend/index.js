@@ -5,15 +5,16 @@ const multer = require('multer');
 const path = require('path');
 const FormDataModel = require('./models/FormData');
 
+const corsConfig = {
+    origin: "*",
+    credential: true,
+    methods : ["POST", "GET", "PUT", "DELETE"],
+}; 
 const app = express();
 app.use(express.json());
-app.use(cors(
-    {
-       origin:["https//react-login-signup-form-api.vercel.app"],
-       methods:["POST", "GET"],
-       credentials: true
-   }
-));
+app.options("", cors(corsConfig));
+app.use(cros(corsConfig));
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
 
 mongoose.connect('mongodb://127.0.0.1:27017/employee', {
